@@ -45,10 +45,11 @@ const config = {
 // Server.
 const serverConfig = {
   server: {
-    baseDir: './',
+    baseDir: 'dist',
     directory: true
   },
-  startPath: `${dist}/index.html`,
+  serveStatic: ['./public'],
+  startPath: `index.html`,
   notify: false
 }
 
@@ -60,7 +61,7 @@ function html() {
   return src(config.html.src)
     .pipe(
       nunjucksRender({
-        path: ['src/templates']
+        path: [`${root}/templates`]
       })
     )
     .pipe(dest(config.html.dist))

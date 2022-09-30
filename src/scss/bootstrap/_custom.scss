@@ -1,0 +1,115 @@
+$margins: (
+  0: 0,
+  8: 8px,
+  16: 16px,
+  auto: auto
+);
+$paddings: (
+  0: 0,
+  8: 8px,
+  16: 16px
+);
+$font-sizes: (
+  10: 10px,
+  12: 12px,
+  16: 16px
+);
+$utilities: (
+  'max-width': (
+    property: max-width,
+    class: max-w,
+    responsive: true,
+    values: (
+      364: 364px
+    )
+  ),
+  'min-width': (
+    property: min-width,
+    class: min-w,
+    responsive: true,
+    values: (
+      96: 96px
+    )
+  ),
+  'margin-top': (
+    property: margin-top,
+    class: mt,
+    responsive: true,
+    values: $margins
+  ),
+  'margin-right': (
+    property: margin-right,
+    class: mr,
+    responsive: true,
+    values: $margins
+  ),
+  'margin-bottom': (
+    property: margin-bottom,
+    class: mb,
+    responsive: true,
+    values: $margins
+  ),
+  'margin-left': (
+    property: margin-left,
+    class: ml,
+    responsive: true,
+    values: $margins
+  ),
+  'padding': (
+    property: padding,
+    class: p,
+    responsive: true,
+    values: $paddings
+  ),
+  'padding-x': (
+    property: padding-right padding-left,
+    class: px,
+    responsive: true,
+    values: $paddings
+  ),
+  'padding-y': (
+    property: padding-top padding-bottom,
+    class: py,
+    responsive: true,
+    values: $paddings
+  ),
+  'padding-top': (
+    property: padding-top,
+    class: pt,
+    responsive: true,
+    values: $paddings
+  ),
+  'padding-right': (
+    property: padding-right,
+    class: pr,
+    responsive: true,
+    values: $paddings
+  ),
+  'padding-bottom': (
+    property: padding-bottom,
+    class: pb,
+    responsive: true,
+    values: $paddings
+  ),
+  'padding-left': (
+    property: padding-left,
+    class: pl,
+    responsive: true,
+    values: $paddings
+  ),
+  'font-size': (
+    property: font-size,
+    class: fs,
+    responsive: true,
+    values: $font-sizes
+  ),
+  'font-weight': (
+    property: font-weight,
+    class: fw,
+    values: (
+      400: 400,
+      600: 600
+    )
+  ),
+  'color': null
+);

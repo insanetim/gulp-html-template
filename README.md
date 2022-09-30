@@ -5,10 +5,10 @@
 
 <h2>How to use Gulp HTML Template</h2>
 
-<pre>git clone https://github.com/insanetim/gulp-template</pre>
+<pre>git clone https://github.com/insanetim/gulp-html-template</pre>
 
 <ol>
-	<li>Clone or <a href="https://github.com/insanetim/gulp-template/archive/master.zip">Download</a> <strong>Starting Template</strong> from GitHub</li>
+	<li>Clone or <a href="https://github.com/insanetim/gulp-html-template/archive/master.zip">Download</a> <strong>Starting Template</strong> from GitHub</li>
 	<li>Install Node Modules: <strong>npm i</strong> or <strong>yarn install</strong></li>
 	<li>Run: <strong>gulp</strong></li>
 </ol>
