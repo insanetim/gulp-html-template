@@ -6,12 +6,13 @@ const del = require('del')
 const nunjucksRender = require('gulp-nunjucks-render')
 
 // For css.
-const sass = require('gulp-sass')
+const sass = require('gulp-sass')(require('sass'))
 const postcss = require('gulp-postcss')
 const autoprefixer = require('autoprefixer')
 const cssnano = require('cssnano')
 
 // For js.
+const include = require('gulp-include')
 const uglify = require('gulp-uglify-es').default
 
 // For errors.
@@ -67,7 +68,7 @@ function html() {
 }
 
 function css() {
-  const plugins = [autoprefixer({ grid: 'autoplace' }), cssnano()]
+  const plugins = [autoprefixer(), cssnano()]
   return src(config.css.src)
     .pipe(
       sass({
@@ -87,6 +88,11 @@ function css() {
 
 function js() {
   return src(config.js.src)
+    .pipe(
+      include({
+        includePaths: [__dirname + '/node_modules', __dirname + '/src/js']
+      })
+    )
     .pipe(
       rename({
         suffix: '.min',
