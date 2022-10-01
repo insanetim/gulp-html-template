@@ -18,7 +18,9 @@ const gulpWebpack = require('webpack-stream')
 const uglify = require('gulp-uglify-es').default
 
 // For errors.
-const notify = require('gulp-notify')
+const plumber = require('gulp-plumber')
+// const notifier = require('gulp-notifier')
+const notifier = require('node-notifier')
 
 // For view.
 const browserSync = require('browser-sync').create()
@@ -65,12 +67,23 @@ const webpackConfig = {
 }
 
 // Tasks
+function errorHandler(error) {
+  notifier.notify({
+    title: 'Gulp Error',
+    message: error.message,
+    timeout: 3
+  })
+  console.error('\x1b[31m', error.message, '\x1b[0m')
+  this.emit('end')
+}
+
 function browser_sync() {
   browserSync.init(serverConfig)
 }
 
 function templates() {
   return src(paths.templates.src)
+    .pipe(plumber({ errorHandler }))
     .pipe(twig())
     .pipe(
       beautify({
@@ -84,11 +97,8 @@ function templates() {
 function css() {
   const plugins = [autoprefixer(), cssnano()]
   return src(paths.css.src)
-    .pipe(
-      sass({
-        includePaths: ['node_modules']
-      }).on('error', notify.onError())
-    )
+    .pipe(plumber({ errorHandler }))
+    .pipe(sass({ includePaths: ['node_modules'] }))
     .pipe(postcss(plugins))
     .pipe(
       rename({
@@ -102,6 +112,7 @@ function css() {
 
 function js() {
   return src(paths.js.src)
+    .pipe(plumber({ errorHandler }))
     .pipe(gulpWebpack(webpackConfig, webpack))
     .pipe(
       rename({
@@ -114,9 +125,7 @@ function js() {
 }
 
 function clean() {
-  return del([paths.templates.dist, paths.css.dist, paths.js.dist], {
-    force: true
-  })
+  return del([paths.dist])
 }
 
 function watcher() {

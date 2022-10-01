@@ -2,6 +2,7 @@
   "extends": ["stylelint-config-standard-scss", "stylelint-config-prettier-scss", "stylelint-prettier/recommended"],
   "plugins": ["stylelint-prettier"],
   "rules": {
+    "no-empty-source": null,
     "no-duplicate-selectors": true,
     "color-named": "always-where-possible",
     "declaration-empty-line-before": "never",
