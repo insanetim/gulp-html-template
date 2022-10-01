@@ -2,8 +2,9 @@ const { src, dest, parallel, series, watch } = require('gulp')
 const rename = require('gulp-rename')
 const del = require('del')
 
-// For html.
-const nunjucksRender = require('gulp-nunjucks-render')
+// For templates.
+const twig = require('gulp-twig')
+const beautify = require('gulp-jsbeautifier')
 
 // For css.
 const sass = require('gulp-sass')(require('sass'))
@@ -12,7 +13,8 @@ const autoprefixer = require('autoprefixer')
 const cssnano = require('cssnano')
 
 // For js.
-const include = require('gulp-include')
+const webpack = require('webpack')
+const gulpWebpack = require('webpack-stream')
 const uglify = require('gulp-uglify-es').default
 
 // For errors.
@@ -21,28 +23,27 @@ const notify = require('gulp-notify')
 // For view.
 const browserSync = require('browser-sync').create()
 
-const root = './src'
-const dist = './dist'
-
-const config = {
-  html: {
-    dir: `${root}/templates/**/*.njk`,
-    src: `${root}/templates/*.njk`,
-    dist: `${dist}/`
+const paths = {
+  src: './src',
+  dist: './dist',
+  templates: {
+    dir: './src/templates/**/*.twig',
+    src: './src/templates/pages/*.twig',
+    dist: './dist/'
   },
   css: {
-    dir: `${root}/scss/**/*.scss`,
-    src: `${root}/scss/**/*.scss`,
-    dist: `${dist}/css`
+    dir: './src/scss/**/*.scss',
+    src: './src/scss/main.scss',
+    dist: './dist/css'
   },
   js: {
-    dir: `${root}/js/**/*.js`,
-    src: `${root}/js/*.js`,
-    dist: `${dist}/js`
+    dir: './src/js/**/*.js',
+    src: './src/js/app.js',
+    dist: './dist/js'
   }
 }
 
-// Server.
+// Configs
 const serverConfig = {
   server: {
     baseDir: 'dist',
@@ -53,24 +54,36 @@ const serverConfig = {
   notify: false
 }
 
+const webpackConfig = {
+  mode: 'development',
+  entry: {
+    app: paths.js.src
+  },
+  output: {
+    filename: '[name].js'
+  }
+}
+
+// Tasks
 function browser_sync() {
   browserSync.init(serverConfig)
 }
 
-function html() {
-  return src(config.html.src)
+function templates() {
+  return src(paths.templates.src)
+    .pipe(twig())
     .pipe(
-      nunjucksRender({
-        path: [`${root}/templates`]
+      beautify({
+        indent_size: 2
       })
     )
-    .pipe(dest(config.html.dist))
+    .pipe(dest(paths.templates.dist))
     .pipe(browserSync.stream())
 }
 
 function css() {
   const plugins = [autoprefixer(), cssnano()]
-  return src(config.css.src)
+  return src(paths.css.src)
     .pipe(
       sass({
         includePaths: ['node_modules']
@@ -83,17 +96,13 @@ function css() {
         extname: '.css'
       })
     )
-    .pipe(dest(config.css.dist))
+    .pipe(dest(paths.css.dist))
     .pipe(browserSync.stream())
 }
 
 function js() {
-  return src(config.js.src)
-    .pipe(
-      include({
-        includePaths: [__dirname + '/node_modules', __dirname + '/src/js']
-      })
-    )
+  return src(paths.js.src)
+    .pipe(gulpWebpack(webpackConfig, webpack))
     .pipe(
       rename({
         suffix: '.min',
@@ -101,20 +110,21 @@ function js() {
       })
     )
     .pipe(uglify())
-    .pipe(dest(config.js.dist))
+    .pipe(dest(paths.js.dist))
 }
 
 function clean() {
-  return del([config.html.dist, config.css.dist, config.js.dist], {
+  return del([paths.templates.dist, paths.css.dist, paths.js.dist], {
     force: true
   })
 }
 
 function watcher() {
-  watch(config.html.dir, html)
-  watch(config.css.dir, css)
-  watch(config.js.dir, js).on('change', browserSync.reload)
+  watch(paths.templates.dir, templates)
+  watch(paths.css.dir, css)
+  watch(paths.js.dir, js).on('change', browserSync.reload)
 }
 
+exports.paths = paths
 exports.clean = clean
-exports.default = series(clean, parallel(html, css, js), parallel(watcher, browser_sync))
+exports.default = series(clean, parallel(templates, css, js), parallel(watcher, browser_sync))

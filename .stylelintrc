@@ -1,0 +1,27 @@
+{
+  "extends": ["stylelint-config-standard-scss", "stylelint-config-prettier-scss", "stylelint-prettier/recommended"],
+  "plugins": ["stylelint-prettier"],
+  "rules": {
+    "no-duplicate-selectors": true,
+    "color-named": "always-where-possible",
+    "declaration-empty-line-before": "never",
+    "function-url-quotes": "always",
+    "font-weight-notation": "numeric",
+    "font-family-name-quotes": "always-unless-keyword",
+    "font-family-no-missing-generic-family-keyword": null,
+    "comment-whitespace-inside": "always",
+    "comment-empty-line-before": "never",
+    "rule-empty-line-before": "never-multi-line",
+    "selector-pseudo-element-colon-notation": "double",
+    "selector-class-pattern": null,
+    "selector-id-pattern": null,
+    "alpha-value-notation": "number",
+    "no-descending-specificity": null,
+    "value-no-vendor-prefix": null,
+    "scss/at-rule-no-unknown": true,
+    "scss/dollar-variable-pattern": null,
+    "scss/at-extend-no-missing-placeholder": null,
+    "scss/double-slash-comment-empty-line-before": null,
+    "prettier/prettier": [true, { "singleQuote": true, "printWidth": 120 }]
+  }
+}

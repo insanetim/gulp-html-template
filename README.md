@@ -1,7 +1,7 @@
 <h1>Gulp HTML Template</h1>
 <p>Lightweight startup HTML template, based on Gulp.</p>
 
-<p><strong>Gulp HTML Template</strong> - lightweight startup HTML template with <strong>Gulp</strong>, <strong>BrowserSync</strong>, <strong>Sass</strong>, <strong>Nunjucks</strong> and <strong>Bootstrap</strong>.</p>
+<p><strong>Gulp HTML Template</strong> - lightweight startup HTML template with <strong>Gulp</strong>, <strong>Webpack</strong>, <strong>BrowserSync</strong>, <strong>Sass</strong>, <strong>Twig</strong> and <strong>Bootstrap</strong>.</p>
 
 <h2>How to use Gulp HTML Template</h2>
 
