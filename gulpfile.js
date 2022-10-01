@@ -15,16 +15,15 @@ const cssnano = require('cssnano')
 // For js.
 const webpack = require('webpack')
 const gulpWebpack = require('webpack-stream')
-const uglify = require('gulp-uglify-es').default
 
 // For errors.
 const plumber = require('gulp-plumber')
-// const notifier = require('gulp-notifier')
 const notifier = require('node-notifier')
 
 // For view.
 const browserSync = require('browser-sync').create()
 
+// Config
 const paths = {
   src: './src',
   dist: './dist',
@@ -45,10 +44,9 @@ const paths = {
   }
 }
 
-// Configs
 const serverConfig = {
   server: {
-    baseDir: 'dist',
+    baseDir: paths.dist,
     directory: true
   },
   serveStatic: ['./public'],
@@ -57,16 +55,16 @@ const serverConfig = {
 }
 
 const webpackConfig = {
-  mode: 'development',
+  mode: 'production',
   entry: {
     app: paths.js.src
   },
   output: {
-    filename: '[name].js'
+    filename: '[name].min.js'
   }
 }
 
-// Tasks
+// Task
 function errorHandler(error) {
   notifier.notify({
     title: 'Gulp Error',
@@ -94,7 +92,7 @@ function templates() {
     .pipe(browserSync.stream())
 }
 
-function css() {
+function styles() {
   const plugins = [autoprefixer(), cssnano()]
   return src(paths.css.src)
     .pipe(plumber({ errorHandler }))
@@ -110,17 +108,10 @@ function css() {
     .pipe(browserSync.stream())
 }
 
-function js() {
+function scripts() {
   return src(paths.js.src)
     .pipe(plumber({ errorHandler }))
     .pipe(gulpWebpack(webpackConfig, webpack))
-    .pipe(
-      rename({
-        suffix: '.min',
-        extname: '.js'
-      })
-    )
-    .pipe(uglify())
     .pipe(dest(paths.js.dist))
 }
 
@@ -130,10 +121,9 @@ function clean() {
 
 function watcher() {
   watch(paths.templates.dir, templates)
-  watch(paths.css.dir, css)
-  watch(paths.js.dir, js).on('change', browserSync.reload)
+  watch(paths.css.dir, styles)
+  watch(paths.js.dir, scripts).on('change', browserSync.reload)
 }
 
-exports.paths = paths
 exports.clean = clean
-exports.default = series(clean, parallel(templates, css, js), parallel(watcher, browser_sync))
+exports.default = series(clean, parallel(templates, styles, scripts), parallel(watcher, browser_sync))

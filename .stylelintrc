@@ -1,6 +1,7 @@
 {
   "extends": ["stylelint-config-standard-scss", "stylelint-config-prettier-scss", "stylelint-prettier/recommended"],
   "plugins": ["stylelint-prettier"],
+  "ignoreFiles": ["./dist/**/*.css"],
   "rules": {
     "no-empty-source": null,
     "no-duplicate-selectors": true,
