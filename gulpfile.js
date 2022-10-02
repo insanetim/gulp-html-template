@@ -1,20 +1,19 @@
 const { src, dest, parallel, series, watch } = require('gulp')
-const rename = require('gulp-rename')
 const del = require('del')
 
 // For templates.
 const twig = require('gulp-twig')
 const beautify = require('gulp-jsbeautifier')
 
-// For css.
+// For styles.
 const sass = require('gulp-sass')(require('sass'))
 const postcss = require('gulp-postcss')
 const autoprefixer = require('autoprefixer')
-const cssnano = require('cssnano')
 
-// For js.
+// For scripts.
 const webpack = require('webpack')
 const gulpWebpack = require('webpack-stream')
+const TerserPlugin = require('terser-webpack-plugin')
 
 // For errors.
 const plumber = require('gulp-plumber')
@@ -55,12 +54,34 @@ const serverConfig = {
 }
 
 const webpackConfig = {
-  mode: 'production',
+  mode: process.env.NODE_ENV || 'development',
   entry: {
     app: paths.js.src
   },
   output: {
-    filename: '[name].min.js'
+    filename: '[name].js'
+  },
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        extractComments: false
+      })
+    ]
+  },
+  module: {
+    rules: [
+      {
+        test: /\.js?$/,
+        exclude: /(node_modules)/,
+        loader: 'babel-loader'
+      },
+      {
+        test: /\.s?css$/,
+        include: /node_modules/,
+        use: ['style-loader', 'css-loader', 'sass-loader']
+      }
+    ]
   }
 }
 
@@ -93,17 +114,15 @@ function templates() {
 }
 
 function styles() {
-  const plugins = [autoprefixer(), cssnano()]
   return src(paths.css.src)
     .pipe(plumber({ errorHandler }))
-    .pipe(sass({ includePaths: ['node_modules'] }))
-    .pipe(postcss(plugins))
     .pipe(
-      rename({
-        suffix: '.min',
-        extname: '.css'
+      sass({
+        includePaths: ['node_modules'],
+        outputStyle: 'compressed'
       })
     )
+    .pipe(postcss([autoprefixer()]))
     .pipe(dest(paths.css.dist))
     .pipe(browserSync.stream())
 }
@@ -126,4 +145,5 @@ function watcher() {
 }
 
 exports.clean = clean
+exports.build = series(clean, parallel(templates, styles, scripts))
 exports.default = series(clean, parallel(templates, styles, scripts), parallel(watcher, browser_sync))
