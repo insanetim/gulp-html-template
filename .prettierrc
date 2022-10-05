@@ -5,6 +5,5 @@
   "singleQuote": true,
   "trailingComma": "none",
   "withNodeModules": true,
-  "printWidth": 120,
-  "singleAttributePerLine": true
+  "printWidth": 120
 }

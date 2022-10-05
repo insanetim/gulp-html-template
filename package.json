@@ -17,7 +17,7 @@
     "start": "cross-env NODE_ENV=development gulp",
     "build": "cross-env NODE_ENV=production gulp build",
     "clean": "gulp clean",
-    "lint": "eslint .",
+    "lint": "eslint --format codeframe src/",
     "stylelint": "stylelint './src/scss/**/*.scss'"
   },
   "devDependencies": {
@@ -30,6 +30,7 @@
     "css-loader": "^6.7.1",
     "del": "^5.1.0",
     "eslint": "^8.24.0",
+    "eslint-formatter-codeframe": "^7.32.1",
     "gulp": "^4.0.2",
     "gulp-jsbeautifier": "^3.0.1",
     "gulp-plumber": "^1.2.1",

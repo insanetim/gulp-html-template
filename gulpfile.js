@@ -13,7 +13,6 @@ const autoprefixer = require('autoprefixer')
 // For scripts.
 const webpack = require('webpack')
 const gulpWebpack = require('webpack-stream')
-const TerserPlugin = require('terser-webpack-plugin')
 
 // For errors.
 const plumber = require('gulp-plumber')
@@ -42,7 +41,6 @@ const paths = {
     dist: './dist/js'
   }
 }
-
 const serverConfig = {
   server: {
     baseDir: paths.dist,
@@ -52,38 +50,7 @@ const serverConfig = {
   startPath: `index.html`,
   notify: false
 }
-
-const webpackConfig = {
-  mode: process.env.NODE_ENV || 'development',
-  entry: {
-    app: paths.js.src
-  },
-  output: {
-    filename: '[name].js'
-  },
-  optimization: {
-    minimize: true,
-    minimizer: [
-      new TerserPlugin({
-        extractComments: false
-      })
-    ]
-  },
-  module: {
-    rules: [
-      {
-        test: /\.js?$/,
-        exclude: /(node_modules)/,
-        loader: 'babel-loader'
-      },
-      {
-        test: /\.s?css$/,
-        include: /node_modules/,
-        use: ['style-loader', 'css-loader', 'sass-loader']
-      }
-    ]
-  }
-}
+const webpackConfig = require('./webpack.config')
 
 // Task
 function errorHandler(error) {
