@@ -5,5 +5,7 @@
   "singleQuote": true,
   "trailingComma": "none",
   "withNodeModules": true,
-  "printWidth": 120
+  "printWidth": 120,
+  "plugins": ["./node_modules/prettier-plugin-twig-melody"],
+  "twigMelodyPlugins": ["./node_modules/prettier-plugin-twig-enhancements"]
 }
