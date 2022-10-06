@@ -46,7 +46,7 @@ const serverConfig = {
     baseDir: paths.dist,
     directory: true
   },
-  serveStatic: ['./public'],
+  serveStatic: ['./assets'],
   startPath: `index.html`,
   notify: false
 }
