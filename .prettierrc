@@ -6,6 +6,14 @@
   "trailingComma": "none",
   "withNodeModules": true,
   "printWidth": 120,
+  "singleAttributePerLine": true,
   "plugins": ["./node_modules/prettier-plugin-twig-melody"],
-  "twigMelodyPlugins": ["./node_modules/prettier-plugin-twig-enhancements"]
+  "twigMelodyPlugins": ["./node_modules/prettier-plugin-twig-enhancements"],
+  "twigMultiTags": [
+    "nav,endnav",
+    "switch,case,default,endswitch",
+    "ifchildren,endifchildren",
+    "cache,endcache",
+    "js,endjs"
+  ]
 }

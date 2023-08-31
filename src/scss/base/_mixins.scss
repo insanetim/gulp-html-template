@@ -1,10 +1,10 @@
-@mixin font-face($font-family, $file-path, $weight: normal, $style: normal, $display: swap) {
+@mixin font($fname, $fweight, $fstyle, $furl, $display: swap) {
   @font-face {
-    font-family: $font-family;
-    font-weight: $weight;
-    font-style: $style;
+    font-family: $fname;
+    font-style: $fstyle;
+    font-weight: $fweight;
     font-display: $display;
-    src: url('#{$file-path}.ttf') format('truetype');
+    src: url($furl);
   }
 }
 @mixin flex-center {

@@ -1,6 +1,6 @@
-const TerserPlugin = require('terser-webpack-plugin')
+import TerserPlugin from 'terser-webpack-plugin'
 
-module.exports = {
+export default {
   mode: process.env.NODE_ENV || 'development',
   entry: {
     app: './src/js/app.js'
@@ -12,6 +12,7 @@ module.exports = {
     minimize: true,
     minimizer: [
       new TerserPlugin({
+        terserOptions: { format: { comments: false } },
         extractComments: false
       })
     ]

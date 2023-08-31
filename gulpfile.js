@@ -1,25 +1,30 @@
-const { src, dest, parallel, series, watch } = require('gulp')
-const del = require('del')
+import pkg from 'gulp'
+const { src, dest, parallel, series, watch } = pkg
+import concat from 'gulp-concat'
+import { deleteAsync } from 'del'
 
 // For templates.
-const twig = require('gulp-twig')
-const beautify = require('gulp-jsbeautifier')
+import twig from 'gulp-twig'
+import beautify from 'gulp-jsbeautifier'
 
 // For styles.
-const sass = require('gulp-sass')(require('sass'))
-const postcss = require('gulp-postcss')
-const autoprefixer = require('autoprefixer')
+import * as dartSass from 'sass'
+import gulpSass from 'gulp-sass'
+const sass = gulpSass(dartSass)
+import postcss from 'gulp-postcss'
+import autoprefixer from 'autoprefixer'
+import cssnano from 'cssnano'
 
 // For scripts.
-const webpack = require('webpack')
-const gulpWebpack = require('webpack-stream')
+import webpack from 'webpack'
+import gulpWebpack from 'webpack-stream'
 
 // For errors.
-const plumber = require('gulp-plumber')
-const notifier = require('node-notifier')
+import plumber from 'gulp-plumber'
+import notifier from 'node-notifier'
 
 // For view.
-const browserSync = require('browser-sync').create()
+import browserSync from 'browser-sync'
 
 // Config
 const paths = {
@@ -50,9 +55,9 @@ const serverConfig = {
   startPath: `index.html`,
   notify: false
 }
-const webpackConfig = require('./webpack.config')
+import webpackConfig from './webpack.config.js'
 
-// Task
+// Tasks
 function errorHandler(error) {
   notifier.notify({
     title: 'Gulp Error',
@@ -63,7 +68,7 @@ function errorHandler(error) {
   this.emit('end')
 }
 
-function browser_sync() {
+function browsersync() {
   browserSync.init(serverConfig)
 }
 
@@ -89,7 +94,11 @@ function styles() {
         outputStyle: 'compressed'
       })
     )
-    .pipe(postcss([autoprefixer()]))
+    .pipe(
+      postcss([autoprefixer({ grid: 'autoplace' })]),
+      cssnano({ preset: ['default', { discardComments: { removeAll: true } }] })
+    )
+    .pipe(concat('main.min.css'))
     .pipe(dest(paths.css.dist))
     .pipe(browserSync.stream())
 }
@@ -98,11 +107,12 @@ function scripts() {
   return src(paths.js.src)
     .pipe(plumber({ errorHandler }))
     .pipe(gulpWebpack(webpackConfig, webpack))
+    .pipe(concat('app.min.js'))
     .pipe(dest(paths.js.dist))
 }
 
 function clean() {
-  return del([paths.dist])
+  return deleteAsync([paths.dist], { force: true })
 }
 
 function watcher() {
@@ -111,6 +121,6 @@ function watcher() {
   watch(paths.js.dir, scripts).on('change', browserSync.reload)
 }
 
-exports.clean = clean
-exports.build = series(clean, parallel(templates, styles, scripts))
-exports.default = series(clean, parallel(templates, styles, scripts), parallel(watcher, browser_sync))
+export { clean }
+export const build = series(clean, parallel(templates, styles, scripts))
+export default series(clean, parallel(templates, styles, scripts), parallel(watcher, browsersync))

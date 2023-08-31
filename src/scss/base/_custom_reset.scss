@@ -1,10 +1,13 @@
+@include font('roboto-f', normal, normal, '/fonts/roboto-regular-webfont.woff2');
+@include font('roboto-f', normal, italic, '/fonts/roboto-italic-webfont.woff2');
+@include font('roboto-f', bold, normal, '/fonts/roboto-bold-webfont.woff2');
+@include font('roboto-f', bold, italic, '/fonts/roboto-bolditalic-webfont.woff2');
 *,
 *::before,
 *::after {
   box-sizing: border-box;
 }
 html {
-  font-family: sans-serif;
   font-size: 62.5%;
   line-height: 1;
   text-size-adjust: 100%;
@@ -14,6 +17,7 @@ body {
   overflow-x: hidden;
   margin: 0;
   padding: 0;
+  font-family: $font;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   @extend .text-body;
@@ -26,7 +30,7 @@ h5,
 h6 {
   margin: 0;
   padding: 0;
-  font-weight: 600;
+  font-style: italic;
 }
 ul {
   list-style: none;
