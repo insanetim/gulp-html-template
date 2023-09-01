@@ -1,6 +1,7 @@
 import pkg from 'gulp'
 const { src, dest, parallel, series, watch } = pkg
 import concat from 'gulp-concat'
+import changed from 'gulp-changed'
 import { deleteAsync } from 'del'
 
 // For templates.
@@ -18,6 +19,9 @@ import cssnano from 'cssnano'
 // For scripts.
 import webpack from 'webpack'
 import gulpWebpack from 'webpack-stream'
+
+// For images
+import imagemin from 'gulp-imagemin'
 
 // For errors.
 import plumber from 'gulp-plumber'
@@ -44,6 +48,16 @@ const paths = {
     dir: './src/js/**/*.js',
     src: './src/js/app.js',
     dist: './dist/js'
+  },
+  images: {
+    dir: './src/assets/images/',
+    src: './src/assets/images/**/*',
+    dist: './dist/assets/images'
+  },
+  assets: {
+    dir: './src/assets/**/*',
+    src: ['./src/assets/fonts/**/*'],
+    dist: ['./dist/assets/fonts/**/*']
   }
 }
 const serverConfig = {
@@ -51,7 +65,6 @@ const serverConfig = {
     baseDir: paths.dist,
     directory: true
   },
-  serveStatic: ['./assets'],
   startPath: `index.html`,
   notify: false
 }
@@ -111,16 +124,47 @@ function scripts() {
     .pipe(dest(paths.js.dist))
 }
 
+function images() {
+  return src(paths.images.src)
+    .pipe(changed(paths.images.dist))
+    .pipe(imagemin())
+    .pipe(dest(paths.images.dist))
+    .pipe(browserSync.stream())
+}
+
+function copyAssets() {
+  return src(paths.assets.src, {
+    base: './src'
+  })
+    .pipe(changed(paths.dist))
+    .pipe(dest(paths.dist))
+}
+
 function clean() {
-  return deleteAsync([paths.dist], { force: true })
+  return deleteAsync(paths.dist, { force: true })
+}
+
+function cleanImages() {
+  return deleteAsync(paths.images.dist, { force: true })
+}
+
+function cleanAssets() {
+  return deleteAsync(paths.assets.dist, { force: true })
 }
 
 function watcher() {
-  watch(paths.templates.dir, templates)
-  watch(paths.css.dir, styles)
-  watch(paths.js.dir, scripts).on('change', browserSync.reload)
+  watch(paths.templates.dir, { usePolling: true }, templates)
+  watch(paths.css.dir, { usePolling: true }, styles)
+  watch(paths.js.dir, { usePolling: true }, scripts).on('change', browserSync.reload)
+  watch(paths.images.dir, { usePolling: true }, series(cleanImages, images))
+  watch(paths.assets.dir, { usePolling: true }, series(cleanAssets, copyAssets)).on('change', browserSync.reload)
 }
 
 export { clean }
-export const build = series(clean, parallel(templates, styles, scripts))
-export default series(clean, parallel(templates, styles, scripts), parallel(watcher, browsersync))
+export const build = series(clean, parallel(images, copyAssets), parallel(templates, styles, scripts))
+export default series(
+  clean,
+  parallel(images, copyAssets),
+  parallel(templates, styles, scripts),
+  parallel(watcher, browsersync)
+)

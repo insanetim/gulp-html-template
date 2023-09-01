@@ -1,3 +1,12 @@
+// FONTS
+
+@include font('roboto-f', 400, normal, '../assets/fonts/roboto-regular-webfont.woff2');
+@include font('roboto-f', 400, italic, '../assets/fonts/roboto-italic-webfont.woff2');
+@include font('roboto-f', 700, normal, '../assets/fonts/roboto-bold-webfont.woff2');
+@include font('roboto-f', 700, italic, '../assets/fonts/roboto-bolditalic-webfont.woff2');
+
+// ICOMOON
+
 @font-face {
   font-family: 'icomoon';
   src: url('/fonts/icomoon/icomoon.woff') format('woff'), url('/fonts/icomoon/icomoon.ttf') format('truetype'),
